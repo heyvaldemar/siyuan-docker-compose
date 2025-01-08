@@ -1,0 +1,17 @@
+networks:
+  siyuan-network:
+    external: true
+
+services:
+  siyuan:
+    image: ${SIYUAN_IMAGE_TAG}
+    command: ['--workspace=/siyuan/workspace/', '--accessAuthCode=${SIYUAN_AUTH_CODE}']
+    volumes:
+      - ./workspace:/siyuan/workspace
+    environment:
+      TZ: ${SIYUAN_TIMEZONE}
+    networks:
+      - siyuan-network
+    ports:
+      - "6806:6806"
+    restart: unless-stopped
