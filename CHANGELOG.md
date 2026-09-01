@@ -1,0 +1,43 @@
+# Changelog
+
+All notable changes to this project are documented in this file.
+
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
+and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+
+## [Unreleased]
+
+_(no unreleased changes yet)_
+
+## [1.0.0] - 2026-09-01
+
+First semver release. Brings this template to the fleet standard established
+in [keycloak-traefik-letsencrypt-docker-compose](https://github.com/heyvaldemar/keycloak-traefik-letsencrypt-docker-compose)
+v1.2.0.
+
+### Fixed (the container restart-looped on current SiYuan)
+
+- **The kernel invocation was outdated**: SiYuan v3.8 made the kernel a
+  subcommand CLI, so the old `--accessAuthCode` flag just printed the
+  help text and the container restarted forever. The compose now runs
+  `serve` and passes the access code via `SIYUAN_ACCESS_AUTH_CODE`;
+  your `SIYUAN_AUTH_CODE` value in `.env` keeps working unchanged.
+
+### Changed
+
+- **SiYuan pinned to v3.8.2 by `tag@sha256:digest`** in the compose
+  `x-images` block. `git pull` delivers the tested version;
+  `SIYUAN_IMAGE_TAG` in `.env` overrides deliberately.
+- `SIYUAN_AUTH_CODE` is required with a fail-fast guard; the timezone has
+  a default.
+
+### Added
+
+- **Deployment Verification workflow**: actionlint; a Trivy scan of the
+  pinned image; weekly `check-pin-freshness` (digest drift + SiYuan
+  release lag); and a deploy-and-test job that boots the kernel and
+  requires it to answer on its port.
+- `.env.example`; `.gitignore` for `.env` and the workspace data.
+
+[Unreleased]: https://github.com/heyvaldemar/siyuan-docker-compose/compare/v1.0.0...HEAD
+[1.0.0]: https://github.com/heyvaldemar/siyuan-docker-compose/releases/tag/v1.0.0

@@ -1,15 +1,29 @@
+# Image pins live HERE, as interpolation defaults, so `git pull` (or
+# re-downloading this file) delivers the exact version this repository
+# has tested — no .env editing required. Setting SIYUAN_IMAGE_TAG in .env
+# overrides the default; .env itself carries only secrets and deliberate
+# overrides. CI reads the pin from this line.
+x-images:
+  siyuan: &siyuan-image ${SIYUAN_IMAGE_TAG:-b3log/siyuan:v3.8.2@sha256:af1442205fd60a8f5710c46c7e4c92bf3c8c1c9405026823496e4459f821549c}
+
 networks:
   siyuan-network:
     external: true
 
 services:
   siyuan:
-    image: ${SIYUAN_IMAGE_TAG}
-    command: ['--workspace=/siyuan/workspace/', '--accessAuthCode=${SIYUAN_AUTH_CODE}']
+    image: *siyuan-image
+    # SiYuan v3.8 made the kernel a subcommand CLI: `serve` replaces the
+    # old flag-only invocation, and the access code moved to the
+    # SIYUAN_ACCESS_AUTH_CODE environment variable (the old
+    # --accessAuthCode flag now just prints the help text and the
+    # container restart-loops).
+    command: ['serve', '--workspace=/siyuan/workspace/']
     volumes:
       - ./workspace:/siyuan/workspace
     environment:
-      TZ: ${SIYUAN_TIMEZONE}
+      SIYUAN_ACCESS_AUTH_CODE: ${SIYUAN_AUTH_CODE:?set in .env - see .env.example for generation command}
+      TZ: ${SIYUAN_TIMEZONE:-America/New_York}
     networks:
       - siyuan-network
     ports:

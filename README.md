@@ -1,99 +1,67 @@
-# SiYuan Using Docker Compose
+# SiYuan — Docker Compose
 
-📙 The complete installation guide is available on my [website](https://www.heyvaldemar.com/install-siyuan-using-docker-compose/).
+[![Deployment Verification](https://github.com/heyvaldemar/siyuan-docker-compose/actions/workflows/deployment-verification.yml/badge.svg?branch=main)](https://github.com/heyvaldemar/siyuan-docker-compose/actions/workflows/deployment-verification.yml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-❗ Change variables in the `.env` to meet your requirements.
+This repository deploys **SiYuan** — a privacy-first personal knowledge base with block-level editing — with its workspace on the host filesystem and the UI protected by an access code.
 
-To generate a 256-bit hexadecimal authentication code for the `SIYUAN_AUTH_CODE` variable, use the following OpenSSL command:
+## Getting started
 
-`openssl rand -hex 256`
+```bash
+# 1. Clone
+git clone https://github.com/heyvaldemar/siyuan-docker-compose
+cd siyuan-docker-compose
 
-💡 Note that the `.env` file should be in the same directory as `siyuan-docker-compose.yml`.
+# 2. Create the Docker network the stack expects
+docker network create siyuan-network
 
-Create network for your services before deploying the configuration using the commands:
+# 3. Copy the environment template and set the access code
+cp .env.example .env
+$EDITOR .env
 
-`docker network create siyuan-network`
+# 4. Deploy
+docker compose -f siyuan-docker-compose.yml -p siyuan up -d
+```
 
-Deploy SiYuan using Docker Compose:
+Open `http://YOUR_SERVER:6806` and enter the access code from `.env`. Notes live in `./workspace` next to the compose file.
 
-`docker compose -f siyuan-docker-compose.yml -p siyuan up -d`
+### What success looks like
 
-## Author
+```bash
+docker compose -f siyuan-docker-compose.yml -p siyuan ps
+curl -s -o /dev/null -w "%{http_code}\n" http://127.0.0.1:6806/   # 401 until you enter the code — that's the kernel up and auth enforced
+```
 
-hey everyone,
+### Common first-deploy issues
 
-💾 I’ve been in the IT game for over 20 years, cutting my teeth with some big names like [IBM](https://www.linkedin.com/in/heyvaldemar/), [Thales](https://www.linkedin.com/in/heyvaldemar/), and [Amazon](https://www.linkedin.com/in/heyvaldemar/). These days, I wear the hat of a DevOps Consultant and Team Lead, but what really gets me going is Docker and container technology - I’m kind of obsessed!
+- **Container restarts and the log prints the kernel help text.** You are on a pre-v1.0.0 revision of this compose: SiYuan v3.8 changed its CLI, `git pull` fixes it.
+- **`docker compose up` fails with `set in .env`.** `SIYUAN_AUTH_CODE` is empty; the error names it.
+- **Network not found.** Step 2 was skipped.
 
-💛 I have my own IT [blog](https://www.heyvaldemar.com/), where I’ve built a [community](https://discord.gg/AJQGCCBcqf) of DevOps enthusiasts who share my love for all things Docker, containers, and IT technologies in general. And to make sure everyone can jump on this awesome DevOps train, I write super detailed guides (seriously, they’re foolproof!) that help even newbies deploy and manage complex IT solutions.
+## Supply chain trust
 
-🚀 My dream is to empower every single person in the DevOps community to squeeze every last drop of potential out of Docker and container tech.
+The image [`b3log/siyuan`](https://hub.docker.com/r/b3log/siyuan) is pinned to `tag@sha256:<digest>` as an interpolation default in the compose `x-images` block. `git pull` alone delivers the tested version; `SIYUAN_IMAGE_TAG` in `.env` overrides deliberately.
 
-🐳 As a [Docker Captain](https://www.docker.com/captains/vladimir-mikhalev/), I’m stoked to share my knowledge, experiences, and a good dose of passion for the tech. My aim is to encourage learning, innovation, and growth, and to inspire the next generation of IT whizz-kids to push Docker and container tech to its limits.
+The weekly `check-pin-freshness` CI job re-resolves the pin and compares it against the latest SiYuan release. GitHub Actions are pinned by commit SHA; Dependabot keeps those fresh.
 
-Let’s do this together!
+## Production checklist
 
-## My 2D Portfolio
+- [ ] **Strong access code** — it is the only thing between the internet and your notes if you expose the port; prefer keeping 6806 on a private network or behind a VPN.
+- [ ] **Back up `./workspace`** — that directory is your entire knowledge base.
+- [ ] **Update deliberately** — bump the pin after reading SiYuan release notes; the kernel migrates workspace data on version jumps.
 
-🕹️ Click into [sre.gg](https://www.sre.gg/) — my virtual space is a 2D pixel-art portfolio inviting you to interact with elements that encapsulate the milestones of my DevOps career.
+## Testing
 
-## My Courses
+The [Deployment Verification](https://github.com/heyvaldemar/siyuan-docker-compose/actions/workflows/deployment-verification.yml?query=branch%3Amain) workflow runs on every push, pull request, and every Monday at 06:00 UTC: actionlint, a Trivy scan of the pinned image, the weekly freshness check, and a deploy-and-test job that boots the kernel with an ephemeral access code and requires it to answer with auth enforced.
 
-🎓 Dive into my [comprehensive IT courses](https://www.heyvaldemar.com/courses/) designed for enthusiasts and professionals alike. Whether you're looking to master Docker, conquer Kubernetes, or advance your DevOps skills, my courses provide a structured pathway to enhancing your technical prowess.
+---
 
-🔑 [Each course](https://www.udemy.com/user/heyvaldemar/) is built from the ground up with real-world scenarios in mind, ensuring that you gain practical knowledge and hands-on experience. From beginners to seasoned professionals, there's something here for everyone to elevate their IT skills.
-
-## My Services
-
-💼 Take a look at my [service catalog](https://www.heyvaldemar.com/services/) and find out how we can make your technological life better. Whether it's increasing the efficiency of your IT infrastructure, advancing your career, or expanding your technological horizons — I'm here to help you achieve your goals. From DevOps transformations to building gaming computers — let's make your technology unparalleled!
-
-## Patreon Exclusives
-
-🏆 Join my [Patreon](https://www.patreon.com/heyvaldemar) and dive deep into the world of Docker and DevOps with exclusive content tailored for IT enthusiasts and professionals. As your experienced guide, I offer a range of membership tiers designed to suit everyone from newbies to IT experts.
-
-## My Recommendations
-
-📕 Check out my collection of [essential DevOps books](https://kit.co/heyvaldemar/essential-devops-books)\
-🖥️ Check out my [studio streaming and recording kit](https://kit.co/heyvaldemar/my-studio-streaming-and-recording-kit)\
-📡 Check out my [streaming starter kit](https://kit.co/heyvaldemar/streaming-starter-kit)
-
-## Follow Me
-
-🎬 [YouTube](https://www.youtube.com/channel/UCf85kQ0u1sYTTTyKVpxrlyQ?sub_confirmation=1)\
-🐦 [X / Twitter](https://twitter.com/heyvaldemar)\
-🎨 [Instagram](https://www.instagram.com/heyvaldemar/)\
-🐘 [Mastodon](https://mastodon.social/@heyvaldemar)\
-🧵 [Threads](https://www.threads.net/@heyvaldemar)\
-🎸 [Facebook](https://www.facebook.com/heyvaldemarFB/)\
-🧊 [Bluesky](https://bsky.app/profile/heyvaldemar.bsky.social)\
-🎥 [TikTok](https://www.tiktok.com/@heyvaldemar)\
-💻 [LinkedIn](https://www.linkedin.com/in/heyvaldemar/)\
-📣 [daily.dev Squad](https://app.daily.dev/squads/devopscompass)\
-🧩 [LeetCode](https://leetcode.com/u/heyvaldemar/)\
-🐈 [GitHub](https://github.com/heyvaldemar)
-
-## Community of IT Experts
-
-👾 [Discord](https://discord.gg/AJQGCCBcqf)
-
-## Refill My Coffee Supplies
-
-💖 [PayPal](https://www.paypal.com/paypalme/heyvaldemarCOM)\
-🏆 [Patreon](https://www.patreon.com/heyvaldemar)\
-💎 [GitHub](https://github.com/sponsors/heyvaldemar)\
-🥤 [BuyMeaCoffee](https://www.buymeacoffee.com/heyvaldemar)\
-🍪 [Ko-fi](https://ko-fi.com/heyvaldemar)
-
-🌟 **Bitcoin (BTC):** bc1q2fq0k2lvdythdrj4ep20metjwnjuf7wccpckxc\
-🔹 **Ethereum (ETH):** 0x76C936F9366Fad39769CA5285b0Af1d975adacB8\
-🪙 **Binance Coin (BNB):** bnb1xnn6gg63lr2dgufngfr0lkq39kz8qltjt2v2g6\
-💠 **Litecoin (LTC):** LMGrhx8Jsx73h1pWY9FE8GB46nBytjvz8g
+## About the maintainer
 
 <div align="center">
 
-### Show some 💜 by starring some of the [repositories](https://github.com/heyValdemar?tab=repositories)!
+**Maintained by [Vladimir Mikhalev](https://github.com/heyvaldemar)** — Docker Captain · IBM Champion · AWS Community Builder
 
-![octocat](https://user-images.githubusercontent.com/10498744/210113490-e2fad07f-4488-4da8-a656-b9abbdd8cb26.gif)
+[YouTube](https://www.youtube.com/channel/UCf85kQ0u1sYTTTyKVpxrlyQ?sub_confirmation=1) · [Blog](https://heyvaldemar.com) · [LinkedIn](https://www.linkedin.com/in/heyvaldemar/)
 
 </div>
-
-![footer](https://user-images.githubusercontent.com/10498744/210157572-1fca0242-8af2-46a6-bfa3-666ffd40ebde.svg)
