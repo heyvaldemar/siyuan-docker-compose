@@ -140,6 +140,8 @@ jobs:
         run: |
           cat > .env <<EOF
           SIYUAN_AUTH_CODE=$(openssl rand -base64 24 | tr -d '/+=' | head -c 32)
+          SIYUAN_BACKUP_INIT_SLEEP=15s
+          SIYUAN_BACKUP_INTERVAL=60s
           EOF
           echo "Generated ephemeral .env for CI run"
 
@@ -156,6 +158,17 @@ jobs:
             sleep 5
           done'
           curl -s -o /dev/null -w "SiYuan kernel: %{http_code}\n" http://127.0.0.1:6806/
+
+      - name: Verify a backup is produced and valid
+        # Log-driven: the file named in a 'backup OK' line is complete by
+        # definition, so this never races an archive still being written.
+        run: |
+          # shellcheck disable=SC2016
+          timeout 6m bash -c 'until docker compose -f "$DOCKER_COMPOSE_FILE" -p "$COMPOSE_PROJECT_NAME" logs backups 2>/dev/null | grep -qE "Data backup (OK|FAILED)"; do echo "Waiting for the first backup cycle..."; sleep 10; done'
+          data=$(docker compose -f "$DOCKER_COMPOSE_FILE" -p "$COMPOSE_PROJECT_NAME" logs backups 2>/dev/null | grep "Data backup OK" | tail -1 | sed -E 's/.*Data backup OK: ([^ ]+) .*/\1/')
+          [ -n "$data" ] || { echo "::error::no 'Data backup OK' line - the data archive failed"; exit 1; }
+          docker compose -f "$DOCKER_COMPOSE_FILE" -p "$COMPOSE_PROJECT_NAME" exec -T backups sh -c "tar -tzf '$data' > /dev/null" && echo "Data backup valid: $data"
+          docker compose -f "$DOCKER_COMPOSE_FILE" -p "$COMPOSE_PROJECT_NAME" logs backups 2>/dev/null | grep -i "backup FAILED" && { echo "::error::the backups log reports a failure"; exit 1; } || true
 
       - name: Show container logs on failure
         if: failure()
