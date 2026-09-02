@@ -13,6 +13,16 @@ networks:
 services:
   siyuan:
     image: *siyuan-image
+    # Resource limits as .env-overridable defaults (e.g. SIYUAN_MEMORY_LIMIT=2g);
+    # the override survives every git pull.
+    deploy:
+      resources:
+        limits:
+          memory: ${SIYUAN_MEMORY_LIMIT:-512m}
+          cpus: "${SIYUAN_CPU_LIMIT:-1.0}"
+        reservations:
+          memory: ${SIYUAN_MEMORY_RESERVATION:-64m}
+          cpus: "${SIYUAN_CPU_RESERVATION:-0.25}"
     # SiYuan v3.8 made the kernel a subcommand CLI: `serve` replaces the
     # old flag-only invocation, and the access code moved to the
     # SIYUAN_ACCESS_AUTH_CODE environment variable (the old
