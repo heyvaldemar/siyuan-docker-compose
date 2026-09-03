@@ -42,7 +42,7 @@ curl -s -o /dev/null -w "%{http_code}\n" http://127.0.0.1:6806/   # 401 until yo
 
 The image [`b3log/siyuan`](https://hub.docker.com/r/b3log/siyuan) is pinned to `tag@sha256:<digest>` as an interpolation default in the compose `x-images` block. `git pull` alone delivers the tested version; `SIYUAN_IMAGE_TAG` in `.env` overrides deliberately.
 
-The weekly `check-pin-freshness` CI job re-resolves the pin and compares it against the latest SiYuan release. GitHub Actions are pinned by commit SHA; Dependabot keeps those fresh.
+The daily `check-pin-freshness` CI job re-resolves the pin and compares it against the latest SiYuan release. GitHub Actions are pinned by commit SHA; Dependabot keeps those fresh.
 
 ## Production checklist
 
@@ -95,7 +95,7 @@ docker compose -p siyuan exec backups ls -la /srv/siyuan/backups/
 
 ## Testing
 
-The [Deployment Verification](https://github.com/heyvaldemar/siyuan-docker-compose/actions/workflows/deployment-verification.yml?query=branch%3Amain) workflow runs on every push, pull request, and every Monday at 06:00 UTC: actionlint, a Trivy scan of the pinned image, the weekly freshness check, and a deploy-and-test job that boots the kernel with an ephemeral access code and requires it to answer with auth enforced.
+The [Deployment Verification](https://github.com/heyvaldemar/siyuan-docker-compose/actions/workflows/deployment-verification.yml?query=branch%3Amain) workflow runs on every push, pull request, and every day at 06:00 UTC: actionlint, a Trivy scan of the pinned image, the weekly freshness check, and a deploy-and-test job that boots the kernel with an ephemeral access code and requires it to answer with auth enforced.
 
 ---
 
