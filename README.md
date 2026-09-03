@@ -97,6 +97,15 @@ docker compose -p siyuan exec backups ls -la /srv/siyuan/backups/
 
 The [Deployment Verification](https://github.com/heyvaldemar/siyuan-docker-compose/actions/workflows/deployment-verification.yml?query=branch%3Amain) workflow runs on every push, pull request, and every day at 06:00 UTC: actionlint, a Trivy scan of the pinned image, the weekly freshness check, and a deploy-and-test job that boots the kernel with an ephemeral access code and requires it to answer with auth enforced.
 
+### Backup and restore, proven
+
+`tests/e2e-backup-restore.sh` runs against the live stack and is what CI executes after the smoke test. The scenario that matters most is the restore roundtrip: the application is stopped, the baseline archive is unpacked over the data directory, and a file created after the baseline is gone. The tests stop the application briefly and write into its data directory — run them on a staging copy with short intervals in `.env` (`SIYUAN_BACKUP_INIT_SLEEP=15s`, `SIYUAN_BACKUP_INTERVAL=60s`), never on production.
+
+```bash
+chmod +x tests/e2e-backup-restore.sh
+./tests/e2e-backup-restore.sh
+```
+
 ---
 
 ## About the maintainer
