@@ -4,7 +4,7 @@
 # overrides the default; .env itself carries only secrets and deliberate
 # overrides. CI reads the pin from this line.
 x-images:
-  siyuan: &siyuan-image ${SIYUAN_IMAGE_TAG:-b3log/siyuan:v3.8.2@sha256:af1442205fd60a8f5710c46c7e4c92bf3c8c1c9405026823496e4459f821549c}
+  siyuan: &siyuan-image ${SIYUAN_IMAGE_TAG:-b3log/siyuan:${SIYUAN_IMAGE_VERSION:-v3.8.2@sha256:af1442205fd60a8f5710c46c7e4c92bf3c8c1c9405026823496e4459f821549c}}
 
 networks:
   siyuan-network:
