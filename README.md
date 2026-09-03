@@ -29,7 +29,7 @@ Open `http://YOUR_SERVER:6806` and enter the access code from `.env`. Notes live
 
 ```bash
 docker compose -f siyuan-docker-compose.yml -p siyuan ps
-curl -s -o /dev/null -w "%{http_code}\n" http://127.0.0.1:6806/   # 401 until you enter the code — that's the kernel up and auth enforced
+curl -s -o /dev/null -w "%{http_code}\n" http://127.0.0.1:6806/   # 401 until you enter the code, that's the kernel up and auth enforced
 ```
 
 ### Common first-deploy issues
