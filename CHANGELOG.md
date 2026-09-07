@@ -7,19 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+_(no unreleased changes yet)_
+
+## [1.6.1] - 2026-09-07
+
 ### Changed
 
+- **`update.sh` names any new required variable before it moves.** An update can add a required variable; `docker compose up` used to stop on it after the checkout, with the tree already on the new tag. The script now lists the variables that appeared in `.env.example` since your version and refuses, before anything has moved, when a required one is not in your `.env`. Names only, never values.
 - **`b3log/siyuan:v3.8.2` moved to `b3log/siyuan:v3.8.3`** (automated: the freshness check reported the lag, the deploy job booted the stack on the new image before this landed).
 
-## [1.6.0] - 2026-09-04
-
-### Fixed
-
-- **A backup interrupted halfway no longer looks like a good one.** The loop
-  already renamed a failed dump to `.failed` so nothing would restore from it,
-  but that rename only runs if the shell lives long enough to reach it. Stop
-  the container mid-dump and it does not: the truncated file keeps the name a
-  finished backup would have, and it is the newest one, which is exactly what
+one, which is exactly what
   the restore script and the end-to-end test pick. Every backup is now written
   to `<name>.partial` and renamed only after the dump succeeds, so the real
   name never exists unless the file behind it is complete. Verified by killing
@@ -128,7 +125,8 @@ v1.2.0.
   requires it to answer on its port.
 - `.env.example`; `.gitignore` for `.env` and the workspace data.
 
-[Unreleased]: https://github.com/heyvaldemar/siyuan-docker-compose/compare/v1.6.0...HEAD
+[Unreleased]: https://github.com/heyvaldemar/siyuan-docker-compose/compare/v1.6.1...HEAD
+[1.6.1]: https://github.com/heyvaldemar/siyuan-docker-compose/compare/v1.6.0...v1.6.1
 [1.6.0]: https://github.com/heyvaldemar/siyuan-docker-compose/compare/v1.5.0...v1.6.0
 [1.5.0]: https://github.com/heyvaldemar/siyuan-docker-compose/compare/v1.4.0...v1.5.0
 [1.4.0]: https://github.com/heyvaldemar/siyuan-docker-compose/compare/v1.3.0...v1.4.0
