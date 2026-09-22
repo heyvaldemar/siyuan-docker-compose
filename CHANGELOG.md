@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+_(no unreleased changes yet)_
+
+## [1.6.3] - 2026-09-22
+
 ### Changed
 
 - **`b3log/siyuan:v3.8.4` moved to `b3log/siyuan:v3.8.5`.** The freshness check reported the lag; the deploy job booted the stack on the new image before this landed.
@@ -133,7 +137,8 @@ v1.2.0.
   requires it to answer on its port.
 - `.env.example`; `.gitignore` for `.env` and the workspace data.
 
-[Unreleased]: https://github.com/heyvaldemar/siyuan-docker-compose/compare/v1.6.2...HEAD
+[Unreleased]: https://github.com/heyvaldemar/siyuan-docker-compose/compare/v1.6.3...HEAD
+[1.6.3]: https://github.com/heyvaldemar/siyuan-docker-compose/compare/v1.6.2...v1.6.3
 [1.6.2]: https://github.com/heyvaldemar/siyuan-docker-compose/compare/v1.6.1...v1.6.2
 [1.6.1]: https://github.com/heyvaldemar/siyuan-docker-compose/compare/v1.6.0...v1.6.1
 [1.6.0]: https://github.com/heyvaldemar/siyuan-docker-compose/compare/v1.5.0...v1.6.0
