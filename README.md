@@ -1,6 +1,7 @@
 # SiYuan on Docker Compose
 
 [![Deployment Verification](https://github.com/heyvaldemar/siyuan-docker-compose/actions/workflows/deployment-verification.yml/badge.svg?branch=main)](https://github.com/heyvaldemar/siyuan-docker-compose/actions/workflows/deployment-verification.yml)
+[![OpenSSF Best Practices](https://www.bestpractices.dev/projects/14852/badge)](https://www.bestpractices.dev/projects/14852)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 This repository deploys SiYuan (a privacy-first personal knowledge base with block-level editing) with its workspace on the host filesystem and the UI protected by an access code.
