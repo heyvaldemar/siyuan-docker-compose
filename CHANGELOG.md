@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- **`b3log/siyuan:v3.8.7` moved to `b3log/siyuan:v3.8.8`.** The freshness check reported the lag; the deploy job booted the stack on the new image before this landed.
+
 ### Fixed
 
 - **What a restore sets aside stays inside the volume.** Here that is `temp`, `.siyuan/history`. Moved through the backups container's `/tmp`, each kept path was copied into the container's own layer and out again; inside the volume a move is a rename and nothing is copied, however large the kept paths are.
