@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+_(no unreleased changes yet)_
+
+## [1.6.11] - 2026-11-25
+
 ### Changed
 
 - **`b3log/siyuan:v3.8.11` moved to `b3log/siyuan:v3.8.12`.** The freshness check reported the lag; the deploy job booted the stack on the new image before this landed.
